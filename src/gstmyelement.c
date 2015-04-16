@@ -51,11 +51,11 @@
 
 char response[] = "HTTP/1.1 200 OK\r\n"
 "Content-Type: text/html; charset=UTF-8\r\n\r\n"
-"<!DOCTYPE html><html><head><title>Bye-bye baby bye-bye</title>"
+"<!DOCTYPE html><html><head><title>Pipeline Structure</title>"
 "<style>body { background-color: #111 }"
 "h1 { font-size:4cm; text-align: center; color: black;"
 " text-shadow: 0 0 2mm red}</style></head>"
-"<body><h1>Goodbye, world!</h1></body></html>\r\n";
+"<body><h1>Hello World</h1></body></html>\r\n";
 
 GST_DEBUG_CATEGORY_STATIC (gst_my_element_debug_category);
 #define GST_CAT_DEFAULT gst_my_element_debug_category
@@ -558,29 +558,18 @@ gst_my_element_transform_ip (GstBaseTransform * trans, GstBuffer * buf)
   if (!myelement->parent_info)
   {
     GST_DEBUG_OBJECT (myelement, "transform_ip");
-//  GST_ERROR_OBJECT (myelement, ">>>>>>>>>>>>>>>>>>>>>>> NAME: %s", GST_ELEMENT_NAME(myelement));
-    GstElement *parent = gst_element_get_parent(myelement);
+    GstObject *parent = gst_element_get_parent(myelement);
     GST_INFO_OBJECT (myelement, "Element parent pointer: 0x%p", parent);
     myelement->parent_info = TRUE;
 
-//  GST_ERROR_OBJECT (myelement, ">>>>PARENT: 0x%p", gst_object_get_parent(myelement));
-//  GST_ERROR_OBJECT (myelement, ">>>>PARENT: 0x%p", GST_ELEMENT_PARENT(myelement));
-//    GstIterator * gst_bin_iterate_elements (GstBin *bin);
-    myelement->it = gst_bin_iterate_elements (parent);
-
-    while (gst_iterator_next (myelement->it, &myelement->point) == GST_ITERATOR_OK) {
-//      GstElement* element = GST_ELEMENT (myelement->point);
-//AT THIS POINT ITERATING THE AMOUNT OF ELEMENTS AT THE GST-LAUNCH PIPELINE
+    myelement->it = gst_bin_iterate_elements (GST_BIN(parent));
+    while (gst_iterator_next (myelement->it, &myelement->elem) == GST_ITERATOR_OK) 
+    {
       GST_INFO_OBJECT(myelement, "Iterator");
-
-//      myelement->it_pads = gst_element_iterate_pads (element);
-//      printf ("element -> %s\n", gst_element_get_name (element));
-
-/*      while (gst_iterator_next (myelement->it_pads, &myelement->point_pad) == GST_ITERATOR_OK) {
-        GstPad * pad = GST_PAD (point_pad);
-        printf ("pad-> %s\n", gst_element_get_name (pad));
-      }*/
+      GST_INFO_OBJECT(myelement, "Object Name: %s", gst_element_get_name (g_value_get_object(&myelement->elem)));
     }
+    g_value_unset(&myelement->elem);
+
   }
 
   return GST_FLOW_OK;

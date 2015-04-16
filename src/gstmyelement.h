@@ -46,7 +46,7 @@ struct _GstMyElement
 
   gboolean parent_info;
   GstIterator *it, *it_pads;
-  gpointer point;
+  GValue elem;
 };
 
 struct _GstMyElementClass
