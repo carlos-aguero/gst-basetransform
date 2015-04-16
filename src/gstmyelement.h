@@ -37,6 +37,16 @@ struct _GstMyElement
 {
   GstBaseTransform base_myelement;
 
+   /* Updates task */
+  GstTask *updates_task;
+  GRecMutex updates_lock;
+  GMutex updates_timed_lock;
+  GTimeVal next_update;         /* Time of the next update */
+  gboolean cancelled;
+
+  gboolean parent_info;
+  GstIterator *it, *it_pads;
+  gpointer point;
 };
 
 struct _GstMyElementClass
